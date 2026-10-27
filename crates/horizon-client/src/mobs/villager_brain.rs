@@ -2508,16 +2508,9 @@ impl B {
                     if dist_sqr(bell, block_of(m.position)) < 9
                         && cx.w.block_name(bell[0], bell[1], bell[2]) == "minecraft:bell"
                     {
-                        cx.events.push(MobEvent::SoundId(
-                            "minecraft:block.bell.use".into(),
-                            [
-                                f64::from(bell[0]) + 0.5,
-                                f64::from(bell[1]) + 0.5,
-                                f64::from(bell[2]) + 0.5,
-                            ],
-                            2.0,
-                            1.0,
-                        ));
+                    cx.events.push(MobEvent::RingBell {
+                        pos: [bell[0], bell[1], bell[2]],
+                    });
                     }
                     true
                 },
@@ -4084,6 +4077,7 @@ fn packages(baby: bool, seed: i64, farmer: bool) -> Vec<Entry> {
         },
     );
     add(5, h, look_minimal(seed));
+    add(99, h, B::UpdateActivity(false));
     v.sort_by_key(|e| (e.prio, e.act.slot()));
     v
 }
@@ -4220,6 +4214,12 @@ pub fn describe(m: &Mob) -> Option<(String, String)> {
 pub fn woken(m: &mut Mob, now: i64) {
     if brain(m).is_some() {
         mem(m).last_woken.set(now);
+    }
+}
+/// `Villager` hears a bell: `HEARD_BELL_TIME`, read by `ReactToBell`.
+pub fn heard_bell(m: &mut Mob, now: i64) {
+    if brain(m).is_some() {
+        mem(m).heard_bell_time.set_ttl(now, 301);
     }
 }
 /// What other villagers see of this one's brain.

@@ -721,6 +721,14 @@ pub struct Extra {
     /// The arm the current swing moves (`currentSwing.hand().asArm`): `Some(true)`
     /// for the right arm.
     pub swing_right_arm: Option<bool>,
+    /// The current swing uses `SwingAnimationType.STAB`.
+    pub swing_stab: bool,
+    /// A kinetic weapon's `UseParams` phase ends and `ticksUsingItem`.
+    pub spear_use: Option<([f32; 4], f32)>,
+    /// `KineticWeapon.forwardMovement` of the spear in use.
+    pub spear_forward: f32,
+    /// `ticksSinceKineticHitFeedback` for the spear animation.
+    pub spear_hit: f32,
     pub flag: bool,
     pub flag2: bool,
     /// Species scratch values (the wither's head targets and clocks).
@@ -974,6 +982,9 @@ pub enum MobEvent {
         mob: u32,
         partner: u32,
     },
+    /// A bell was rung (a villager's `RingBell` AI or a player's block
+    /// event): scare nearby villagers and play the bell sound.
+    RingBell { pos: [i32; 3] },
     /// A sound event id that is not a static string (variant sounds).
     SoundId(String, [f64; 3], f32, f32),
     /// `Level.playLocalSound`: a sound the client plays for itself, never
